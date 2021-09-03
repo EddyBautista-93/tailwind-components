@@ -1,9 +1,43 @@
-import React from "react";
+import React , { useState, useEffect, useRef} from "react";
 import { Link } from 'react-router-dom'
+import { Transition } from "@tailwindui/react";
+
+
 
 const Navbar = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+    const container = useRef(null);
+
+    // allow for outside clicks 
+    useEffect(() => {
+        function handleOutsideClick(event) {
+            if(!container.current.contains(event.target)){
+                if(!isOpen) return;
+                setIsOpen(false);
+            }
+        }
+        window.addEventListener("click", handleOutsideClick);
+        return () => window.removeEventListener("click", handleOutsideClick);
+    }, [isOpen, container]);
+
+    // allows use for 'esc' key 
+    useEffect(() => {
+        function handleEscape(event) {
+          if (!isOpen) return;
+    
+          if (event.key === "Escape") {
+            setIsOpen(false);
+          }
+        }
+    
+        document.addEventListener("keyup", handleEscape);
+        return () => document.removeEventListener("keyup", handleEscape);
+      }, [isOpen]);
+
+
     return (
-        <nav className='flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono'
+        <nav  ref={container} className='flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono'
         role='navigation'>
             <Link to='/' className='pl-8'>
             <svg className="w-6 h-6" data-darkreader-inline-fill="" fill="none" stroke="currentColor"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
